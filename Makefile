@@ -3,13 +3,18 @@ CC=gcc
 INCLUDE=include
 SRC=src
 TEST=tests
-FLAGS=-I$(INCLUDE) -I$(TEST) -Wall -lcheck -g
+FLAGS=-I$(INCLUDE) -I$(TEST) -Wall -lcheck -lyaml -g
 COMMON_TEST=$(TEST)/test_runner.c
 
-RESUME_TEST_SRC=$(COMMON_TEST) $(SRC)/resume.c
+RESUME_TEST_SRC=$(SRC)/resume.c
 RESUME_TEST_INCLUDE=$(INCLUDE)/resume.h $(TEST)/resume_test.h
 RESUME_TEST=$(RESUME_TEST_SRC) $(RESUME_TEST_INCLUDE)
 
-CHECK_DEPS= $(RESUME_TEST)
+YAML_TEST_SRC=$(SRC)/yaml.c
+YAML_TEST_INCLUDE=$(INCLUDE)/resume_yaml.h $(TEST)/yaml_test.h
+YAML_TEST=$(YAML_TEST_SRC) $(YAML_TEST_INCLUDE)
+
+
+CHECK_DEPS=$(YAML_TEST) $(RESUME_TEST) $(COMMON_TEST)
 check: $(CHECK_DEPS)
-	$(CC) $(FLAGS) $(RESUME_TEST_SRC) -o check
+	$(CC) $(FLAGS) $(COMMON_TEST) $(RESUME_TEST_SRC) $(YAML_TEST_SRC) -o check

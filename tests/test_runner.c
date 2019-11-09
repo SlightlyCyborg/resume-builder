@@ -1,5 +1,6 @@
 #include <check.h>
 #include "resume_test.h"
+#include "yaml_test.h"
 
 Suite* money_suite(void)
 {
@@ -12,6 +13,7 @@ Suite* money_suite(void)
     tc_core = tcase_create("Core");
 
     tcase_add_test(tc_core, test_load_file);
+    tcase_add_test(tc_core, test_simple_yaml_parse);
     suite_add_tcase(s, tc_core);
 
     return s;
