@@ -15,7 +15,7 @@ YamlParser *newYamlParser(char* yaml){
 
     size_t length = strlen(yaml);
     yaml_parser_set_input_string(
-            parser->libyaml_parser, yaml, length);
+            parser->libyaml_parser, (unsigned char*) yaml, length);
 
     return parser;
 }
@@ -31,10 +31,10 @@ YamlNode nextNode(YamlParser* parser){
 
         if (event.type == YAML_SCALAR_EVENT) {
             if(step == 0) {
-                node.key = malloc(strlen(event.data.scalar.value));
+                node.key = malloc(strlen((char*) event.data.scalar.value));
                 strcpy(node.key,  (char*) event.data.scalar.value);
             } else {
-                node.val = malloc(strlen(event.data.scalar.value));
+                node.val = malloc(strlen((char*) event.data.scalar.value));
                 strcpy(node.val, (char*) event.data.scalar.value);
             }
             step++;
@@ -56,6 +56,15 @@ char* getStrVal(YamlNode* node) {
     return node->strVal;
 }
 
+void setIntVal(YamlNode* node, int val){
+    node->intVal = val;
+}
+
+int getIntVal(YamlNode* node) {
+    return node->intVal;
+}
+
 void freeYamlParser(YamlParser* parser){
     yaml_parser_delete(parser->libyaml_parser);
 }
+
