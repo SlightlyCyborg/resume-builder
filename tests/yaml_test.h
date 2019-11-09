@@ -48,4 +48,19 @@ START_TEST (test_simple_yaml_parse)
     freeYamlParser(parser);
 }
 END_TEST
+
+START_TEST (test_yaml_node_set_and_get_string) {
+    YamlNode node;
+    char dat[] = "foobar";
+    char expected[strlen(dat)];
+    strcpy(expected, dat);
+
+    setStrVal(&node, dat);
+
+    //Ensure strcpy in setStrVal
+    dat[2] = 'z';
+
+    ck_assert_str_eq(getStrVal(&node), expected);
+}
+END_TEST
 #endif

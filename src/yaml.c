@@ -46,6 +46,16 @@ YamlNode nextNode(YamlParser* parser){
     return node;
 }
 
+void setStrVal(YamlNode* node, char* dat) {
+    char* val = (char*) malloc(sizeof(char) * strlen(dat));
+    strcpy(val, dat);
+    node->strVal = val;
+}
+
+char* getStrVal(YamlNode* node) {
+    return node->strVal;
+}
+
 void freeYamlParser(YamlParser* parser){
     yaml_parser_delete(parser->libyaml_parser);
 }
