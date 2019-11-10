@@ -56,14 +56,6 @@ char* getStrVal(YamlNode* node) {
     return node->strVal;
 }
 
-void setIntVal(YamlNode* node, int val){
-    node->intVal = val;
-}
-
-int getIntVal(YamlNode* node) {
-    return node->intVal;
-}
-
 void freeYamlParser(YamlParser* parser){
     yaml_parser_delete(parser->libyaml_parser);
 }

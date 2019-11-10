@@ -5,7 +5,6 @@ typedef struct YamlParser YamlParser;
 
 typedef struct YamlNode {
     char *key, *val, *strVal;
-    int intVal;
 } YamlNode;
 
 YamlParser* newYamlParser(char* yaml);
@@ -15,6 +14,4 @@ YamlNode nextNode(YamlParser* parser);
 
 void setStrVal(YamlNode* node, char* dat);
 char* getStrVal(YamlNode* node);
-void setIntVal(YamlNode* node, int dat);
-int getIntVal(YamlNode* node);
 #endif

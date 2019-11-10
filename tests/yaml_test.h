@@ -63,14 +63,4 @@ START_TEST (test_yaml_node_set_and_get_string) {
     ck_assert_str_eq(getStrVal(&node), expected);
 }
 END_TEST
-
-START_TEST (test_yaml_node_set_and_get_int) {
-    YamlNode node;
-    int expected = 42;
-    setIntVal(&node, expected);
-
-
-    ck_assert_int_eq(getIntVal(&node), expected);
-}
-END_TEST
 #endif
