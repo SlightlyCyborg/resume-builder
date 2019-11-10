@@ -12,11 +12,6 @@ void freeYamlParser(YamlParser *parser);
 
 YamlNode nextNode(YamlParser* parser);
 
-<<<<<<< HEAD
-void setStrVal(YamlNode* node, char* dat);
-char* getStrVal(YamlNode* node);
-=======
 void setVal(YamlNode* node, char* dat);
 char* getVal(YamlNode* node);
->>>>>>> getStrVal-
 #endif
