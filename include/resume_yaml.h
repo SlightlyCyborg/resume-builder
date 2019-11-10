@@ -15,6 +15,4 @@ YamlNode nextNode(YamlParser* parser);
 
 void setStrVal(YamlNode* node, char* dat);
 char* getStrVal(YamlNode* node);
-void setIntVal(YamlNode* node, int dat);
-int getIntVal(YamlNode* node);
 #endif
