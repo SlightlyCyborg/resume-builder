@@ -56,6 +56,14 @@ char* getVal(YamlNode* node) {
     return node->val;
 }
 
+void setChild(YamlNode *parent, YamlNode *child) {
+    parent->child = child;
+}
+
+YamlNode *getChild(YamlNode *parent) {
+    return parent->child;
+}
+
 void freeYamlParser(YamlParser* parser){
     yaml_parser_delete(parser->libyaml_parser);
 }

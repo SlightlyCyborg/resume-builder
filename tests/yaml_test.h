@@ -62,4 +62,18 @@ START_TEST (test_yaml_node_set_and_get_val) {
     ck_assert_str_eq(getVal(&node), expected);
 }
 END_TEST
+
+START_TEST(test_yaml_node_set_and_get_child) {
+    YamlNode parent;
+    YamlNode child;
+    YamlNode *actual, *expected;
+
+    setChild(&parent, &child);
+
+
+    expected = &child;
+    actual = getChild(&parent);
+    ck_assert_ptr_eq(actual, expected);
+}
+END_TEST
 #endif
