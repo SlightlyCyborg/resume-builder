@@ -146,5 +146,28 @@ START_TEST(test_yaml_nested_list) {
     ck_assert_str_eq(getVal(parsed), "f");
 }
 END_TEST
+
+START_TEST(test_yaml_sequenced_root) {
+    char* listYaml =
+        "%YAML 1.1\n---\n"\
+        "a: b\n"\
+        "c: d\n";
+
+    YamlParser *parser = newYamlParser(listYaml);
+    YamlNode *mapped, *second;
+    YamlNode *first = parseAll(parser);
+
+    ck_assert_str_eq(getVal(first), "a");
+
+    mapped = getChild(first);
+    ck_assert_str_eq(getVal(mapped), "b");
+
+    second = getSibling(first);
+    ck_assert_str_eq(getVal(second), "c");
+
+    mapped = getSibling(second);
+    ck_assert_str_eq(getVal(mapped), "d");
+}
+END_TEST
 #endif
 

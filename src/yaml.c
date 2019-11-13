@@ -100,46 +100,8 @@ YamlNode* getNextNode(YamlParser *parser) {
 }
 
 YamlNode *parseAll(YamlParser *parser) {
-    return getNextNode(parser);
+    return handleSequenceEvent(parser);
 }
-
-/*
-YamlNode *parseAll(YamlParser* parser) {
-    char* val;
-    YamlNode *first, *node, *seqRoot;
-    YamlNode **ptr_to_node_ptr = &first;
-    yaml_event_t event;
-    int done = 0;
-    int inSeq = 0;
-
-    while(!done) {
-        if (!yaml_parser_parse(parser->libyaml_parser, &event)){
-            printf("error\n");
-            break;
-        }
-
-        switch(event.type) {
-            case YAML_SCALAR_EVENT:
-                handleScalarEvent(event, ptr_to_node_ptr, inSeq);
-                ptr_to_node_ptr = getPtrToNextNodePtr(inSeq, ptr_to_node_ptr);
-                break;
-            case YAML_SEQUENCE_START_EVENT:
-                inSeq = 1;
-                break;
-            case YAML_MAPPING_START_EVENT:
-                handleMappingEvent(parser, event);
-            case YAML_STREAM_END_EVENT:
-                done = 1;
-                break;
-            default:
-                break;
-        }
-
-        yaml_event_delete(&event);
-    }
-    return first;
-}
-*/
 
 void setVal(YamlNode* node, char* dat) {
     char* val = (char*) malloc(sizeof(char) * strlen(dat));
