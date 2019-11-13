@@ -49,6 +49,8 @@ YamlNode nextNode(YamlParser* parser){
 
 YamlNode *nodeFromScalarEvent(yaml_event_t event) {
     YamlNode *node = (YamlNode *) malloc(sizeof(YamlNode));
+    setChild(node, NULL);
+    setSibling(node, NULL);
     setVal(node, event.data.scalar.value);
     return node;
 }
