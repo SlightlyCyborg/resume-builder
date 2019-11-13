@@ -47,27 +47,63 @@ YamlNode nextNode(YamlParser* parser){
 }
 
 
-YamlNode *nodeFromEvent(yaml_event_t event) {
+YamlNode *nodeFromScalarEvent(yaml_event_t event) {
     YamlNode *node = (YamlNode *) malloc(sizeof(YamlNode));
     setVal(node, event.data.scalar.value);
     return node;
 }
 
-YamlNode **getPtrToNextNodePtr(int inSeq, YamlNode **ptr_to_node_ptr) {
-    if(inSeq) {
-        return &((*ptr_to_node_ptr)->sibling);
-    } else {
-        return &((*ptr_to_node_ptr)->child);
+YamlNode* getNextNode(YamlParser *parser);
+
+YamlNode* handleMappingEvent(YamlParser *parser) {
+    YamlNode *rv = NULL;
+    rv = getNextNode(parser);
+    setChild(rv, getNextNode(parser));
+    return rv;
+}
+
+YamlNode *handleSequenceEvent(YamlParser *parser) {
+    YamlNode *rv;
+    rv = getNextNode(parser);
+    if(rv != NULL) {
+        setSibling(rv, handleSequenceEvent(parser));
     }
+    return rv;
 }
 
-YamlNode **handleScalarEvent(yaml_event_t event, YamlNode **ptr_to_node_ptr, int inSeq) {
-    YamlNode *node;
-    node = nodeFromEvent(event);
-    *ptr_to_node_ptr = node;
-    return getPtrToNextNodePtr(inSeq, ptr_to_node_ptr);
+YamlNode* getNextNode(YamlParser *parser) {
+    yaml_event_t event;
+    YamlNode *rv = NULL;
+
+    if (yaml_parser_parse(parser->libyaml_parser, &event)){
+        switch(event.type) {
+            case YAML_SCALAR_EVENT:
+                rv = nodeFromScalarEvent(event);
+                break;
+            case YAML_SEQUENCE_START_EVENT:
+                rv = handleSequenceEvent(parser);
+                break;
+            case YAML_MAPPING_START_EVENT:
+                rv = handleMappingEvent(parser);
+                break;
+            case YAML_STREAM_START_EVENT:
+            case YAML_DOCUMENT_START_EVENT:
+            case YAML_ALIAS_EVENT:
+                rv = getNextNode(parser);
+            default:
+                break;
+        }
+        yaml_event_delete(&event);
+    }
+    return rv;
+
 }
 
+YamlNode *parseAll(YamlParser *parser) {
+    return getNextNode(parser);
+}
+
+/*
 YamlNode *parseAll(YamlParser* parser) {
     char* val;
     YamlNode *first, *node, *seqRoot;
@@ -84,11 +120,14 @@ YamlNode *parseAll(YamlParser* parser) {
 
         switch(event.type) {
             case YAML_SCALAR_EVENT:
-                ptr_to_node_ptr = handleScalarEvent(event, ptr_to_node_ptr, inSeq);
+                handleScalarEvent(event, ptr_to_node_ptr, inSeq);
+                ptr_to_node_ptr = getPtrToNextNodePtr(inSeq, ptr_to_node_ptr);
                 break;
             case YAML_SEQUENCE_START_EVENT:
                 inSeq = 1;
                 break;
+            case YAML_MAPPING_START_EVENT:
+                handleMappingEvent(parser, event);
             case YAML_STREAM_END_EVENT:
                 done = 1;
                 break;
@@ -100,6 +139,7 @@ YamlNode *parseAll(YamlParser* parser) {
     }
     return first;
 }
+*/
 
 void setVal(YamlNode* node, char* dat) {
     char* val = (char*) malloc(sizeof(char) * strlen(dat));

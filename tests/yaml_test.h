@@ -114,5 +114,37 @@ START_TEST(test_yaml_list) {
     ck_assert_str_eq(getVal(parsed), "d");
 }
 END_TEST
+
+START_TEST(test_yaml_nested_list) {
+    char* listYaml =
+        "%YAML 1.1\n---\n"\
+        "a: \n"\
+        " - b\n"\
+        " - c\n"\
+        " - d: \n"\
+        "   - e\n"\
+        "   - f\n";
+
+    YamlParser *parser = newYamlParser(listYaml);
+    YamlNode *parsed = parseAll(parser);
+
+    ck_assert_str_eq(getVal(parsed), "a");
+
+    parsed = getChild(parsed);
+    ck_assert_str_eq(getVal(parsed), "b");
+
+    parsed = getSibling(parsed);
+    ck_assert_str_eq(getVal(parsed), "c");
+
+    parsed = getSibling(parsed);
+    ck_assert_str_eq(getVal(parsed), "d");
+
+    parsed = getChild(parsed);
+    ck_assert_str_eq(getVal(parsed), "e");
+
+    parsed = getSibling(parsed);
+    ck_assert_str_eq(getVal(parsed), "f");
+}
+END_TEST
 #endif
 
