@@ -46,6 +46,47 @@ YamlNode nextNode(YamlParser* parser){
     return node;
 }
 
+YamlNode *parseAll(YamlParser* parser) {
+    char* val;
+    YamlNode *first, *node, *seqRoot;
+    YamlNode **ptr_to_node_ptr = &first;
+    yaml_event_t event;
+    int done = 0;
+    int inSeq = 0;
+
+    while(!done) {
+        if (!yaml_parser_parse(parser->libyaml_parser, &event)){
+            printf("error\n");
+            break;
+        }
+
+        switch(event.type) {
+            case YAML_SCALAR_EVENT:
+                node = (YamlNode *) malloc(sizeof(YamlNode));
+                *ptr_to_node_ptr = node;
+                setVal(node, event.data.scalar.value);
+
+                if(inSeq) {
+                    ptr_to_node_ptr = &(node->sibling);
+                } else {
+                    ptr_to_node_ptr = &(node->child);
+                }
+                break;
+            case YAML_SEQUENCE_START_EVENT:
+                inSeq = 1;
+                break;
+            case YAML_STREAM_END_EVENT:
+                done = 1;
+                break;
+            default:
+                break;
+        }
+
+        yaml_event_delete(&event);
+    }
+    return first;
+}
+
 void setVal(YamlNode* node, char* dat) {
     char* val = (char*) malloc(sizeof(char) * strlen(dat));
     strcpy(val, dat);
@@ -62,6 +103,14 @@ void setChild(YamlNode *parent, YamlNode *child) {
 
 YamlNode *getChild(YamlNode *parent) {
     return parent->child;
+}
+
+void setSibling(YamlNode *node, YamlNode *sibling) {
+    node->sibling = sibling;
+}
+
+YamlNode *getSibling(YamlNode *node) {
+    return node->sibling;
 }
 
 void freeYamlParser(YamlParser* parser){

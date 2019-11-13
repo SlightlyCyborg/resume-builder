@@ -76,4 +76,42 @@ START_TEST(test_yaml_node_set_and_get_child) {
     ck_assert_ptr_eq(actual, expected);
 }
 END_TEST
+
+START_TEST(test_yaml_node_set_and_get_sibling) {
+    YamlNode node;
+    YamlNode sibling;
+    YamlNode *actual, *expected;
+
+    setSibling(&node, &sibling);
+
+
+    expected = &sibling;
+    actual = getSibling(&node);
+    ck_assert_ptr_eq(actual, expected);
+}
+END_TEST
+
+START_TEST(test_yaml_list) {
+    char* listYaml =
+        "%YAML 1.1\n---\n"\
+        "a: \n"\
+        " - b\n"\
+        " - c\n"\
+        " - d\n";
+
+    YamlParser *parser = newYamlParser(listYaml);
+    YamlNode *parsed = parseAll(parser);
+
+    ck_assert_str_eq(getVal(parsed), "a");
+
+    parsed = getChild(parsed);
+    ck_assert_str_eq(getVal(parsed), "b");
+
+    parsed = getSibling(parsed);
+    ck_assert_str_eq(getVal(parsed), "c");
+
+    parsed = getSibling(parsed);
+    ck_assert_str_eq(getVal(parsed), "d");
+}
+END_TEST
 #endif

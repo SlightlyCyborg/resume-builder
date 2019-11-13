@@ -5,7 +5,7 @@ typedef struct YamlParser YamlParser;
 
 typedef struct YamlNode {
     char *key, *val;
-    struct YamlNode *child;
+    struct YamlNode *child, *sibling;
 } YamlNode;
 
 YamlParser* newYamlParser(char* yaml);
@@ -18,4 +18,9 @@ char* getVal(YamlNode* node);
 
 void setChild(YamlNode *parent, YamlNode *child);
 YamlNode *getChild(YamlNode *parent);
+
+void setSibling(YamlNode *node, YamlNode *sibling);
+YamlNode *getSibling(YamlNode *node);
+
+YamlNode *parseAll(YamlParser* parser);
 #endif
