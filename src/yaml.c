@@ -46,6 +46,28 @@ YamlNode nextNode(YamlParser* parser){
     return node;
 }
 
+
+YamlNode *nodeFromEvent(yaml_event_t event) {
+    YamlNode *node = (YamlNode *) malloc(sizeof(YamlNode));
+    setVal(node, event.data.scalar.value);
+    return node;
+}
+
+YamlNode **getPtrToNextNodePtr(int inSeq, YamlNode **ptr_to_node_ptr) {
+    if(inSeq) {
+        return &((*ptr_to_node_ptr)->sibling);
+    } else {
+        return &((*ptr_to_node_ptr)->child);
+    }
+}
+
+YamlNode **handleScalarEvent(yaml_event_t event, YamlNode **ptr_to_node_ptr, int inSeq) {
+    YamlNode *node;
+    node = nodeFromEvent(event);
+    *ptr_to_node_ptr = node;
+    return getPtrToNextNodePtr(inSeq, ptr_to_node_ptr);
+}
+
 YamlNode *parseAll(YamlParser* parser) {
     char* val;
     YamlNode *first, *node, *seqRoot;
@@ -62,15 +84,7 @@ YamlNode *parseAll(YamlParser* parser) {
 
         switch(event.type) {
             case YAML_SCALAR_EVENT:
-                node = (YamlNode *) malloc(sizeof(YamlNode));
-                *ptr_to_node_ptr = node;
-                setVal(node, event.data.scalar.value);
-
-                if(inSeq) {
-                    ptr_to_node_ptr = &(node->sibling);
-                } else {
-                    ptr_to_node_ptr = &(node->child);
-                }
+                ptr_to_node_ptr = handleScalarEvent(event, ptr_to_node_ptr, inSeq);
                 break;
             case YAML_SEQUENCE_START_EVENT:
                 inSeq = 1;
