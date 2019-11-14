@@ -162,11 +162,49 @@ START_TEST(test_yaml_sequenced_root) {
     mapped = getChild(first);
     ck_assert_str_eq(getVal(mapped), "b");
 
-    second = getSibling(first);
+    second = getNextInMapping(first);
     ck_assert_str_eq(getVal(second), "c");
 
-    mapped = getSibling(second);
+    mapped = getChild(second);
     ck_assert_str_eq(getVal(mapped), "d");
+}
+END_TEST
+
+START_TEST(test_yaml_list_of_grouped_mappings) {
+    char* listOfGroupedMappings =
+        "%YAML 1.1\n---\n"\
+        "grouped:\n"\
+          "- a: b\n"\
+          "  c: d\n"\
+          "- a: e\n"\
+          "  c: f\n";
+
+    YamlParser *parser = newYamlParser(listOfGroupedMappings);
+    YamlNode *node, *nextMapping, *child;
+    YamlNode *root = parseAll(parser);
+
+    ck_assert_str_eq(getVal(root), "grouped");
+
+    node = getChild(root);
+    ck_assert_str_eq(getVal(node), "a");
+    child = getChild(node);
+    ck_assert_str_eq(getVal(child), "b");
+    nextMapping = getNextInMapping(node);
+    ck_assert_str_eq(getVal(nextMapping), "c");
+    child = getChild(nextMapping);
+    ck_assert_str_eq(getVal(child), "d");
+
+
+    node = getSibling(node);
+    ck_assert_str_eq(getVal(node), "a");
+    child = getChild(node);
+    ck_assert_str_eq(getVal(child), "e");
+    nextMapping = getNextInMapping(node);
+    ck_assert_str_eq(getVal(nextMapping), "c");
+    child = getChild(nextMapping);
+    ck_assert_str_eq(getVal(child), "f");
+
+
 }
 END_TEST
 #endif

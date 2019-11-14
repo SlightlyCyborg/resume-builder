@@ -58,9 +58,16 @@ YamlNode *nodeFromScalarEvent(yaml_event_t event) {
 YamlNode* getNextNode(YamlParser *parser);
 
 YamlNode* handleMappingEvent(YamlParser *parser) {
+    YamlNode *nextMappingNode;
     YamlNode *rv = NULL;
     rv = getNextNode(parser);
-    setChild(rv, getNextNode(parser));
+    if(rv != NULL) {
+        setChild(rv, getNextNode(parser));
+        nextMappingNode = handleMappingEvent(parser);
+        //nextMappingNode may be null, but it doesnt matter
+        setNextInMapping(rv, nextMappingNode);
+    }
+
     return rv;
 }
 
@@ -102,7 +109,7 @@ YamlNode* getNextNode(YamlParser *parser) {
 }
 
 YamlNode *parseAll(YamlParser *parser) {
-    return handleSequenceEvent(parser);
+    return getNextNode(parser);
 }
 
 void setVal(YamlNode* node, char* dat) {
@@ -129,6 +136,14 @@ void setSibling(YamlNode *node, YamlNode *sibling) {
 
 YamlNode *getSibling(YamlNode *node) {
     return node->sibling;
+}
+
+void setNextInMapping(YamlNode *node, YamlNode *next) {
+    node->nextInMapping = next;
+}
+
+YamlNode *getNextInMapping(YamlNode *node) {
+    return node->nextInMapping;
 }
 
 void freeYamlParser(YamlParser* parser){

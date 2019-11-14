@@ -20,6 +20,7 @@ Suite* money_suite(void)
     tcase_add_test(tc_core, test_yaml_list);
     tcase_add_test(tc_core, test_yaml_nested_list);
     tcase_add_test(tc_core, test_yaml_sequenced_root);
+    tcase_add_test(tc_core, test_yaml_list_of_grouped_mappings);
     suite_add_tcase(s, tc_core);
 
     return s;
