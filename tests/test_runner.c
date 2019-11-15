@@ -13,7 +13,9 @@ Suite* money_suite(void)
     tc_core = tcase_create("Core");
 
     tcase_add_test(tc_core, test_load_file);
-    tcase_add_test(tc_core, test_simple_yaml_parse);
+    tcase_add_test(tc_core, test_read_basic_info);
+
+    //YAML
     tcase_add_test(tc_core, test_yaml_node_set_and_get_val);
     tcase_add_test(tc_core, test_yaml_node_set_and_get_child);
     tcase_add_test(tc_core, test_yaml_node_set_and_get_sibling);
