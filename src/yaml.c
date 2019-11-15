@@ -150,3 +150,18 @@ void freeYamlParser(YamlParser* parser){
     yaml_parser_delete(parser->libyaml_parser);
 }
 
+YamlNode *searchMapping(YamlNode *root, char* key) {
+    YamlNode *nextMapping;
+
+    if(strcmp(getVal(root), key) == 0) {
+        return getChild(root);
+    }
+
+    nextMapping = getNextInMapping(root);
+    if(nextMapping == NULL) {
+        return NULL;
+    }
+
+    return searchMapping(nextMapping, key);
+}
+

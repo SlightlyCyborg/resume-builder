@@ -27,4 +27,6 @@ void setNextInMapping(YamlNode *node, YamlNode *next);
 YamlNode *getNextInMapping();
 
 YamlNode *parseAll(YamlParser* parser);
+
+YamlNode *searchMapping(YamlNode *root, char *key);
 #endif

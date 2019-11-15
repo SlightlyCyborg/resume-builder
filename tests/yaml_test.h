@@ -207,5 +207,23 @@ START_TEST(test_yaml_list_of_grouped_mappings) {
 
 }
 END_TEST
+
+START_TEST(test_search_yaml_mapping) {
+    char* mapping =
+        "mapping:\n"\
+        " a: b\n"\
+        " c: d\n";
+
+    YamlParser *parser = newYamlParser(mapping);
+    YamlNode *root = parseAll(parser);
+    YamlNode *node = getChild(root);
+
+    YamlNode *c = searchMapping(node, "c");
+    YamlNode *null = searchMapping(node, "foo");
+
+    ck_assert_str_eq(getVal(c), "d");
+    ck_assert_ptr_null(null);
+}
+END_TEST
 #endif
 
