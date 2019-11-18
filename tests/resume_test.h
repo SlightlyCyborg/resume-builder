@@ -43,4 +43,38 @@ START_TEST (test_read_basic_info)
     ck_assert_str_eq(resume.basicInfo.mtbi, "INTJ");
 }
 END_TEST
+
+START_TEST (test_read_job_history)
+{
+    YamlParser *parser;
+    YamlNode *resumeRootNode;
+
+    char* jobYaml =
+        "jobHistory:\n"\
+        "  - company: Trademark Ads\n"\
+        "    startDate: 2015-01\n"\
+        "    endDate: 2016-06\n"\
+        "    description: I wrote beckend features for hospitaljobsonline.com, developed an internal project management system from scratch, and I also helped to develop a real estate web app. We used Linux, PHP, MySql, JQuery, and Solr.\n"\
+        "    boss: George Corley\n"\
+        "    contact: 865-966-1690\n"\
+
+        "  - company: Oak Ridge National Lab\n"\
+        "    startDate: 2013-01\n"\
+        "    endDate: 2013-08\n"\
+        "    description: I built a GIS social media visualization tool in Java. I also built a back end system for passing internal network security data to another intern's vizualizations\n"\
+        "    boss: Chad Steed\n"\
+        "    contact: csteed@acm.org\n";
+
+
+    Resume resume = resumeFromYaml(jobYaml);
+
+    ck_assert_str_eq(resume.jobHistory[0].company, "Trademark Ads");
+    ck_assert_str_eq(resume.jobHistory[0].startDate, "2015-01");
+    ck_assert_str_eq(resume.jobHistory[0].endDate, "2016-06");
+
+    ck_assert_str_eq(resume.jobHistory[1].description, "I built a GIS social media visualization tool in Java. I also built a back end system for passing internal network security data to another intern's vizualizations");
+    ck_assert_str_eq(resume.jobHistory[1].boss, "Chad Steed");
+    ck_assert_str_eq(resume.jobHistory[1].contact, "csteed@acm.org");
+}
+END_TEST
 #endif
